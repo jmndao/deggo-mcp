@@ -1,55 +1,68 @@
 /**
- * Orange Money API mocks
+ * Orange Money API mocks - Updated for Orange Sonatel API
  */
 
 export const mockOrangeAuth = {
-  access_token: "mock_access_token",
-  token_type: "Bearer",
-  expires_in: 3600,
+  access_token: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
+  token_type: "bearer",
+  expires_in: 300,
+  scope: "apimanagement email profile",
+};
+
+export const mockOrangePublicKey = {
+  publicKey: `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA...
+-----END PUBLIC KEY-----`,
+  keyId: "key_123456",
 };
 
 export const mockOrangeTransfer = {
-  transaction_id: "TXN_123456789",
+  transactionId: "TXN_123456789",
   status: "SUCCESS",
-  amount: 1000000, // 10,000 XOF in centimes
-  currency: "XOF",
-  fees: 20000, // 200 XOF in centimes
+  amount: {
+    value: 10000,
+    unit: "XOF",
+  },
+  fees: {
+    value: 200,
+    unit: "XOF",
+  },
   reference: "DEGGO_TEST_REF",
-  recipient_phone: "221771234567",
-  message: "Transfer successful",
-  created_at: "2024-01-15T10:30:00Z",
+  createdAt: "2024-01-15T10:30:00Z",
 };
 
 export const mockOrangeBalance = {
-  balance: 5000000, // 50,000 XOF in centimes
-  currency: "XOF",
-  account_id: "ACC_123",
-  account_name: "Test Account",
+  balance: {
+    value: 50000,
+    unit: "XOF",
+  },
+  accountId: "ACC_123",
   status: "ACTIVE",
-  last_transaction_date: "2024-01-15T09:00:00Z",
+  lastTransactionDate: "2024-01-15T09:00:00Z",
 };
 
 export const mockOrangeHistory = {
   transactions: [
     {
-      transaction_id: "TXN_001",
-      order_id: "ORD_001",
-      amount: 500000,
-      currency: "XOF",
-      fees: 10000,
+      transactionId: "TXN_001",
       status: "SUCCESS",
-      type: "TRANSFER",
-      reference: "REF_001",
-      recipient: {
-        phone_number: "221771234567",
-        name: "Test Recipient",
+      amount: {
+        value: 5000,
+        unit: "XOF",
       },
-      created_at: "2024-01-15T08:00:00Z",
-      updated_at: "2024-01-15T08:01:00Z",
+      fees: {
+        value: 100,
+        unit: "XOF",
+      },
+      reference: "REF_001",
+      createdAt: "2024-01-15T08:00:00Z",
+      customer: {
+        id: "221771234567",
+      },
     },
   ],
   total: 1,
   page: 1,
   limit: 50,
-  has_more: false,
+  hasMore: false,
 };

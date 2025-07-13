@@ -10,12 +10,17 @@ export interface ProviderConfig {
   webhookUrl?: string;
 }
 
+export interface OrangeProviderConfig extends ProviderConfig {
+  pinCode?: string; // Required for Orange Money transactions
+}
+
 export interface PartialProviderConfig {
   apiKey?: string;
   environment?: "production" | "sandbox";
   timeout?: number;
   retryAttempts?: number;
   webhookUrl?: string;
+  pinCode?: string;
 }
 
 export interface StorageConfig {
@@ -32,7 +37,7 @@ export interface AnalyticsConfig {
 
 export interface DeggoConfig {
   providers: {
-    orange?: ProviderConfig;
+    orange?: OrangeProviderConfig;
     wave?: ProviderConfig;
     free_money?: ProviderConfig;
     poste_finance?: ProviderConfig;

@@ -20,7 +20,11 @@ export function createProviders(
       clientSecret: process.env.ORANGE_CLIENT_SECRET || "",
     };
 
-    if (orangeConfig.clientId && orangeConfig.clientSecret) {
+    if (
+      orangeConfig.clientId &&
+      orangeConfig.clientSecret &&
+      orangeConfig.apiKey
+    ) {
       providers.set("orange", new OrangeClient(orangeConfig));
     }
   }

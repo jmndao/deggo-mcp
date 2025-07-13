@@ -7,18 +7,34 @@ import {
   PartialDeggoConfig,
   ProviderConfig,
 } from "../types/config";
-import {
-  DEFAULT_PROVIDER_CONFIG,
-  DEFAULT_STORAGE_CONFIG,
-  DEFAULT_ANALYTICS_CONFIG,
-} from "../core/defaults";
 import { validateConfig } from "./validation";
+
+// Define defaults directly here
+const DEFAULT_PROVIDER_CONFIG = {
+  environment: "sandbox" as const,
+  timeout: 30000,
+  retryAttempts: 3,
+};
+
+const DEFAULT_STORAGE_CONFIG = {
+  type: "memory" as const,
+};
+
+const DEFAULT_ANALYTICS_CONFIG = {
+  enabled: false,
+  trackingLevel: "basic" as const,
+  reportingFrequency: "weekly" as const,
+};
 
 export function loadEnvConfig(): PartialDeggoConfig {
   const config: PartialDeggoConfig = { providers: {} };
 
   // Orange Money
-  if (process.env.ORANGE_API_KEY) {
+  if (
+    process.env.ORANGE_API_KEY &&
+    process.env.ORANGE_CLIENT_ID &&
+    process.env.ORANGE_CLIENT_SECRET
+  ) {
     config.providers!.orange = {
       apiKey: process.env.ORANGE_API_KEY,
       environment:
@@ -27,6 +43,45 @@ export function loadEnvConfig(): PartialDeggoConfig {
       timeout: parseInt(process.env.ORANGE_TIMEOUT || "30000"),
       retryAttempts: parseInt(process.env.ORANGE_RETRY_ATTEMPTS || "3"),
       webhookUrl: process.env.ORANGE_WEBHOOK_URL,
+      pinCode: process.env.ORANGE_PIN_CODE,
+    };
+  }
+
+  // Wave (future implementation)
+  if (process.env.WAVE_API_KEY) {
+    config.providers!.wave = {
+      apiKey: process.env.WAVE_API_KEY,
+      environment:
+        (process.env.WAVE_ENVIRONMENT as "production" | "sandbox") || "sandbox",
+      timeout: parseInt(process.env.WAVE_TIMEOUT || "30000"),
+      retryAttempts: parseInt(process.env.WAVE_RETRY_ATTEMPTS || "3"),
+      webhookUrl: process.env.WAVE_WEBHOOK_URL,
+    };
+  }
+
+  // Storage configuration
+  if (process.env.STORAGE_TYPE) {
+    config.storage = {
+      type: process.env.STORAGE_TYPE as "memory" | "file" | "database",
+      location: process.env.STORAGE_LOCATION,
+      connection: process.env.STORAGE_CONNECTION
+        ? JSON.parse(process.env.STORAGE_CONNECTION)
+        : undefined,
+    };
+  }
+
+  // Analytics configuration
+  if (process.env.ANALYTICS_ENABLED) {
+    config.analytics = {
+      enabled: process.env.ANALYTICS_ENABLED === "true",
+      trackingLevel:
+        (process.env.ANALYTICS_TRACKING_LEVEL as "basic" | "detailed") ||
+        "basic",
+      reportingFrequency:
+        (process.env.ANALYTICS_REPORTING_FREQUENCY as
+          | "daily"
+          | "weekly"
+          | "monthly") || "weekly",
     };
   }
 

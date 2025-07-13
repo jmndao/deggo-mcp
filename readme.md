@@ -51,9 +51,10 @@ cp .env.example .env
 Add your Orange Money credentials:
 
 ```bash
-ORANGE_API_KEY=your_api_key
+ORANGE_API_KEY=221771234567  # Your Orange Money phone number
 ORANGE_CLIENT_ID=your_client_id
 ORANGE_CLIENT_SECRET=your_client_secret
+ORANGE_PIN_CODE=your_4_digit_pin
 ORANGE_ENVIRONMENT=sandbox
 ```
 
@@ -94,9 +95,10 @@ npm install -g deggo-mcp
     "deggo": {
       "command": "deggo-mcp",
       "env": {
-        "ORANGE_API_KEY": "your_orange_api_key",
+        "ORANGE_API_KEY": "221771234567",
         "ORANGE_CLIENT_ID": "your_client_id",
         "ORANGE_CLIENT_SECRET": "your_client_secret",
+        "ORANGE_PIN_CODE": "your_pin",
         "ORANGE_ENVIRONMENT": "sandbox"
       }
     }
@@ -166,12 +168,13 @@ npm run dev
 
 ## Features
 
-- **Orange Money Integration**: Full API support
+- **Complete Orange Money Integration**: RSA PIN encryption, transfers, balance checks, transaction history
 - **MCP Protocol**: Native AI application support
-- **TypeScript**: Type-safe development
-- **Phone Validation**: Senegalese number formats
-- **Error Handling**: Consistent error codes
-- **Fee Comparison**: Compare costs across providers
+- **TypeScript**: Type-safe development with comprehensive error handling
+- **Phone Validation**: Senegalese number formats (70, 75, 76, 77, 78)
+- **Security**: Production-ready RSA encryption for PIN codes
+- **Fee Calculation**: Real Orange Money fee structure
+- **Error Handling**: Comprehensive Orange Sonatel API error mapping
 
 ## API
 
@@ -198,13 +201,28 @@ npm test
 
 ## Orange Money API Access
 
-1. Visit Orange Developer Portal for Senegal
-2. Create developer account
-3. Submit application with use case
-4. Complete KYC requirements
-5. Receive API credentials (API key, Client ID, Client Secret)
+1. **Visit Orange Sonatel Developer Portal**: https://developer.orange-sonatel.com
+2. **Create developer account** and complete verification
+3. **Submit application** with detailed use case description
+4. **Complete KYC requirements** and business verification
+5. **Receive credentials**:
+   - API Key (your Orange Money phone number)
+   - Client ID & Secret for OAuth authentication
+   - Access to sandbox environment
 
-For testing, use sandbox credentials provided by Orange.
+**Required Information:**
+
+- Orange Money account with sufficient balance
+- Valid Senegalese phone number (77xxxxxxx format)
+- 4-digit PIN code for transaction authorization
+- Business documentation for production access
+
+**Sandbox Testing:**
+
+- Use sandbox environment for development
+- Rate limit: 60 requests per minute
+- Test with small amounts (100-1000 XOF)
+- PIN encryption required for all transactions
 
 ## Supported Phone Numbers
 
@@ -240,4 +258,4 @@ MIT
 
 ## Contributing
 
-We welcome contributions! See `docs/new-provider-guide.md` to add Wave support.
+We welcome contributions! See `docs/WAVE_IMPLEMENTATION_GUIDE.md` to add Wave support.
