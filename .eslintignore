@@ -1,0 +1,9 @@
+dist/
+node_modules/
+coverage/
+*.js
+*.d.ts
+tests/__mocks__/
+scripts/
+jest.config.js
+.eslintrc.cjs
