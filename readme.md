@@ -4,28 +4,9 @@ AI-Powered Payment Integration for Senegalese Mobile Money Services
 
 ## How It Works
 
-```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   AI Assistant  │    │    Deggo MCP     │    │ Payment Providers│
-│   (Claude, etc) │    │     Server       │    │  (Orange, Wave) │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-         │                       │                       │
-         │ MCP Protocol          │ HTTP/REST APIs        │
-         │ (stdio/websocket)     │                       │
-         ▼                       ▼                       ▼
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│ "Send 25,000    │───▶│ Tool: send-      │───▶│ Orange Money    │
-│  XOF to my      │    │ payment          │    │ API Call        │
-│  sister"        │    │                  │    │                 │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-         ▲                       │                       │
-         │                       │ Response              │
-         │                       ▼                       ▼
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│ "Payment sent   │◀───│ Formatted        │◀───│ Transaction     │
-│  successfully!" │    │ Response         │    │ Confirmed       │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-```
+<div style="text-align: center;">
+  <img src="assets/deggo-mcp-diagram.png" alt="Deggo MCP Diagram" style="width: 100%;">
+</div>
 
 **Flow**:
 
