@@ -14,7 +14,7 @@
         "dev": "tsx src/server.ts",
         "start": "node dist/server.js",
         "test": "jest",
-        "test:integration": "jest tests/integration --testTimeout=30000",
+        "test:integration": "jest tests/integration --testTimeout=30000 --testPathIgnorePatterns=[]",
         "test:watch": "jest --watch",
         "test:coverage": "jest --coverage",
         "lint": "eslint src/**/*.ts",
