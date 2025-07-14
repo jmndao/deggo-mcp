@@ -2,5 +2,5 @@
  * Utility exports
  */
 
-export * from "./phone";
-export * from "./amount";
+export * from "./phone.js";
+export * from "./amount.js";

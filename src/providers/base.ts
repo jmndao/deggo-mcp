@@ -11,7 +11,7 @@ import {
   TransactionFilter,
   ValidationResult,
   PaymentAmount,
-} from "../types/common";
+} from "../types/common.js";
 
 export interface IPaymentProvider {
   sendMoney(request: PaymentRequest): Promise<PaymentResponse>;

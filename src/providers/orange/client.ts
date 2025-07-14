@@ -3,7 +3,7 @@
  */
 
 import axios, { AxiosInstance } from "axios";
-import { IPaymentProvider } from "../base";
+import { IPaymentProvider } from "../base.js";
 import {
   PaymentRequest,
   PaymentResponse,
@@ -12,7 +12,7 @@ import {
   TransactionFilter,
   ValidationResult,
   PaymentAmount,
-} from "../../types/common";
+} from "../../types/common.js";
 import {
   OrangeConfig,
   OrangeTransferRequest,
@@ -20,17 +20,17 @@ import {
   OrangeBalanceResponse,
   ORANGE_ENDPOINTS,
   ORANGE_ERROR_CODES,
-} from "./types";
-import { OrangeAuth } from "./auth";
-import { validateOrangePayment } from "./validator";
-import { formatPhoneNumber } from "../../utils/phone";
-import { DeggoError, ERROR_CODES } from "../../core/errors";
+} from "./types.js";
+import { OrangeAuth } from "./auth.js";
+import { validateOrangePayment } from "./validator.js";
+import { formatPhoneNumber } from "../../utils/phone.js";
+import { DeggoError, ERROR_CODES } from "../../core/errors.js";
 
 export class OrangeClient implements IPaymentProvider {
-  private httpClient: AxiosInstance;
-  private auth: OrangeAuth;
+  private readonly httpClient: AxiosInstance;
+  private readonly auth: OrangeAuth;
 
-  constructor(private config: OrangeConfig) {
+  constructor(private readonly config: OrangeConfig) {
     this.auth = new OrangeAuth(config);
 
     const baseURL = config.baseUrl || ORANGE_ENDPOINTS[config.environment].base;

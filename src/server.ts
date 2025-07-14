@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * MCP server entry point - clean and simple
+ * MCP server entry point
  */
 
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
@@ -11,8 +11,8 @@ import {
   CallToolRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import dotenv from "dotenv";
-import { Deggo } from "./core/deggo";
-import { MCP_TOOLS, handleToolCall } from "./mcp/tools";
+import { Deggo } from "./core/deggo.js";
+import { MCP_TOOLS, handleToolCall } from "./mcp/tools/index.js";
 
 // Load environment variables
 dotenv.config();
@@ -51,20 +51,25 @@ async function startMCPServer() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
 
-  console.error("Deggo MCP server started successfully");
+  console.log("Deggo MCP server started successfully");
 }
 
 // Handle startup
-if (require.main === module) {
-  startMCPServer().catch((error) => {
+async function main() {
+  try {
+    await startMCPServer();
+  } catch (error) {
     console.error("Failed to start Deggo MCP server:", error);
     process.exit(1);
-  });
+  }
 
   process.on("SIGINT", () => {
-    console.error("Shutting down Deggo MCP server...");
+    console.log("Shutting down Deggo MCP server...");
     process.exit(0);
   });
 }
+
+// Always start the server when this module is executed directly
+main();
 
 export { startMCPServer };

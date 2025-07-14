@@ -2,7 +2,7 @@
  * Default configuration values
  */
 
-import { PartialDeggoConfig } from "../types/config";
+import { PartialDeggoConfig } from "../types/config.js";
 
 export const DEFAULT_PROVIDER_CONFIG = {
   environment: "sandbox" as const,

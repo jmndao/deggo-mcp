@@ -2,7 +2,7 @@
  * Amount formatting utilities
  */
 
-import { PaymentAmount, Currency } from "../types/common";
+import { PaymentAmount, Currency } from "../types/common.js";
 
 export function formatAmountForProvider(amount: PaymentAmount): number {
   if (amount.currency === "XOF" || amount.currency === "XAF") {

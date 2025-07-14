@@ -1,8 +1,8 @@
 /**
- * Orange Money API types - Updated for Orange Sonatel API
+ * Orange (SONATEL) Money API types
  */
 
-import { OrangeProviderConfig } from "../../types/config";
+import { OrangeProviderConfig } from "../../types/config.js";
 
 export interface OrangeConfig extends OrangeProviderConfig {
   clientId: string;

@@ -6,8 +6,8 @@ import {
   DeggoConfig,
   PartialDeggoConfig,
   ProviderConfig,
-} from "../types/config";
-import { validateConfig } from "./validation";
+} from "../types/config.js";
+import { validateConfig } from "./validation.js";
 
 // Define defaults directly here
 const DEFAULT_PROVIDER_CONFIG = {

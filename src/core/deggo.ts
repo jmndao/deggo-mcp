@@ -2,7 +2,7 @@
  * Main Deggo class - clean and focused
  */
 
-import { DeggoConfig, PartialDeggoConfig } from "../types/config";
+import { DeggoConfig, PartialDeggoConfig } from "../types/config.js";
 import {
   PaymentProvider,
   PaymentRequest,
@@ -10,15 +10,16 @@ import {
   AccountBalance,
   TransactionHistory,
   TransactionFilter,
-} from "../types/common";
-import { IPaymentProvider } from "../providers/base";
-import { createConfig } from "../config";
-import { createProviders } from "../providers/factory";
-import { DeggoError, ERROR_CODES } from "./errors";
+} from "../types/common.js";
+import { IPaymentProvider } from "../providers/base.js";
+import { DeggoError, ERROR_CODES } from "./errors.js";
+import { createProviders } from "../providers/factory.js";
+import { createConfig } from "../config/index.js";
 
 export class Deggo {
-  private config: DeggoConfig;
-  private providers: Map<PaymentProvider, IPaymentProvider> = new Map();
+  private readonly config: DeggoConfig;
+  private readonly providers: Map<PaymentProvider, IPaymentProvider> =
+    new Map();
 
   constructor(config?: PartialDeggoConfig) {
     this.config = createConfig(config);

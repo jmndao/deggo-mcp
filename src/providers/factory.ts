@@ -2,10 +2,10 @@
  * Provider factory - creates configured providers
  */
 
-import { DeggoConfig } from "../types/config";
-import { PaymentProvider } from "../types/common";
-import { IPaymentProvider } from "./base";
-import { OrangeClient } from "./orange/client";
+import { DeggoConfig } from "../types/config.js";
+import { PaymentProvider } from "../types/common.js";
+import { IPaymentProvider } from "./base.js";
+import { OrangeClient } from "./orange/client.js";
 
 export function createProviders(
   config: DeggoConfig

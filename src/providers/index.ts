@@ -2,6 +2,6 @@
  * Provider exports
  */
 
-export { IPaymentProvider } from "./base";
-export { createProviders } from "./factory";
-export { OrangeClient } from "./orange/client";
+export { IPaymentProvider } from "./base.js";
+export { createProviders } from "./factory.js";
+export { OrangeClient } from "./orange/client.js";

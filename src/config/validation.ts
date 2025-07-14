@@ -2,14 +2,14 @@
  * Configuration validation
  */
 
-import { DeggoConfig } from "../types/config";
+import { DeggoConfig } from "../types/config.js";
 
 export function validateConfig(config: DeggoConfig): string[] {
   const errors: string[] = [];
 
   // Check if at least one provider is configured
   const configuredProviders = Object.entries(config.providers).filter(
-    ([_, providerConfig]) => providerConfig && providerConfig.apiKey
+    ([_, providerConfig]) => providerConfig?.apiKey
   );
 
   if (configuredProviders.length === 0) {

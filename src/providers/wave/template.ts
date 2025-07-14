@@ -3,7 +3,7 @@
  * TODO: Research Wave API and implement these interfaces
  */
 
-import { ProviderConfig } from "../../types/config";
+import { ProviderConfig } from "../../types/config.js";
 
 // TODO: Research Wave API documentation to fill these out
 export interface WaveConfig extends ProviderConfig {

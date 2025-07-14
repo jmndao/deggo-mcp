@@ -3,8 +3,8 @@
  */
 
 import { z } from "zod";
-import { Deggo } from "../../core/deggo";
-import { PaymentProvider, Currency } from "../../types/common";
+import { Deggo } from "../../core/deggo.js";
+import { PaymentProvider, Currency } from "../../types/common.js";
 
 export const SEND_PAYMENT_TOOL = {
   name: "send-payment",

@@ -9,8 +9,8 @@ import {
   OrangeAuthResponse,
   OrangePublicKeyResponse,
   ORANGE_ENDPOINTS,
-} from "./types";
-import { DeggoError, ERROR_CODES } from "../../core/errors";
+} from "./types.js";
+import { DeggoError, ERROR_CODES } from "../../core/errors.js";
 
 export class OrangeAuth {
   private accessToken: string | null = null;

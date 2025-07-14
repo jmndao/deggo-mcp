@@ -2,5 +2,5 @@
  * Type exports index
  */
 
-export * from "./common";
-export * from "./config";
+export * from "./common.js";
+export * from "./config.js";

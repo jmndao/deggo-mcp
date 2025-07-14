@@ -2,8 +2,8 @@
  * Orange Money validation logic
  */
 
-import { PaymentRequest, ValidationResult } from "../../types/common";
-import { validatePhoneNumber } from "../../utils/phone";
+import { PaymentRequest, ValidationResult } from "../../types/common.js";
+import { validatePhoneNumber } from "../../utils/phone.js";
 
 export function validateOrangePayment(
   request: PaymentRequest

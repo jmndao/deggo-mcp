@@ -2,7 +2,7 @@
  * Error handling classes and utilities
  */
 
-import { PaymentProvider } from "../types/common";
+import { PaymentProvider } from "../types/common.js";
 
 export class DeggoError extends Error {
   constructor(

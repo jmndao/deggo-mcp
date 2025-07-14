@@ -3,8 +3,8 @@
  */
 
 import { z } from "zod";
-import { Deggo } from "../../core/deggo";
-import { PaymentProvider } from "../../types/common";
+import { Deggo } from "../../core/deggo.js";
+import { PaymentProvider } from "../../types/common.js";
 
 export const CHECK_BALANCE_TOOL = {
   name: "check-balance",

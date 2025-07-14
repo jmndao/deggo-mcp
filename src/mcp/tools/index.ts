@@ -3,14 +3,14 @@
  */
 
 import { CallToolRequestSchema } from "@modelcontextprotocol/sdk/types.js";
-import { Deggo } from "../../core/deggo";
-import { SEND_PAYMENT_TOOL, handleSendPayment } from "./payment";
+import { Deggo } from "../../core/deggo.js";
+import { SEND_PAYMENT_TOOL, handleSendPayment } from "./payment.js";
 import {
   CHECK_BALANCE_TOOL,
   TEST_CONNECTIONS_TOOL,
   handleCheckBalance,
   handleTestConnections,
-} from "./balance";
+} from "./balance.js";
 
 export const MCP_TOOLS = [
   SEND_PAYMENT_TOOL,
