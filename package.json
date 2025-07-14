@@ -14,7 +14,7 @@
         "dev": "tsx src/server.ts",
         "start": "node dist/server.js",
         "test": "jest",
-        "test:integration": "jest tests/integration --testTimeout=30000",
+        "test:integration": "jest tests/integration --testTimeout=30000 --testPathIgnorePatterns=[]",
         "test:watch": "jest --watch",
         "test:coverage": "jest --coverage",
         "lint": "eslint src/**/*.ts",
@@ -63,7 +63,7 @@
     },
     "devDependencies": {
         "@types/jest": "^30.0.0",
-        "@types/node": "^20.8.0",
+        "@types/node": "^24.0.13",
         "@types/node-rsa": "^1.1.4",
         "@typescript-eslint/eslint-plugin": "^6.21.0",
         "@typescript-eslint/parser": "^6.21.0",
