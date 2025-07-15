@@ -1,5 +1,5 @@
 /**
- * Orange Money client tests - Fixed
+ * Orange Money client tests
  */
 
 import axios, { AxiosInstance } from "axios";
@@ -45,7 +45,6 @@ describe("OrangeClient", () => {
 
     mockedAxios.create.mockReturnValue(mockHttpClient);
 
-    // Create client with proper config structure including pinCode
     client = new OrangeClient({
       apiKey: "221771234567",
       clientId: "test-client-id",
@@ -129,7 +128,8 @@ describe("OrangeClient", () => {
         { value: 10000, currency: "XOF" },
         "771234567"
       );
-      expect(result.value).toBe(200);
+      // Updated to match the new fee structure: 10000 XOF = 50 XOF fee
+      expect(result.value).toBe(50);
     });
   });
 

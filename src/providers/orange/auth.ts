@@ -1,5 +1,5 @@
 /**
- * Orange Money authentication handler - Complete implementation
+ * Orange Money authentication handler
  */
 
 import axios, { AxiosInstance } from "axios";
@@ -71,16 +71,12 @@ export class OrangeAuth {
     try {
       const publicKey = await this.getPublicKey();
 
-      // Create RSA key instance
       const key = new NodeRSA();
       key.importKey(publicKey, "public");
-
-      // Set encryption options
       key.setOptions({
-        encryptionScheme: "pkcs1", // PKCS#1 v1.5 padding
+        encryptionScheme: "pkcs1",
       });
 
-      // Encrypt the PIN code
       const encrypted = key.encrypt(pinCode, "base64");
       return encrypted;
     } catch (error: any) {
@@ -137,7 +133,7 @@ export class OrangeAuth {
         { headers }
       );
 
-      this.publicKey = response.data.publicKey;
+      this.publicKey = response.data.public_key;
     } catch (error: any) {
       throw new DeggoError(
         ERROR_CODES.NETWORK_ERROR,

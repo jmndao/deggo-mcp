@@ -1,5 +1,5 @@
 /**
- * Orange Money API client - Complete implementation
+ * Orange Money API client
  */
 
 import axios, { AxiosInstance } from "axios";
@@ -55,7 +55,6 @@ export class OrangeClient implements IPaymentProvider {
       );
     }
 
-    // Orange Money requires PIN for transactions
     if (!this.config.pinCode) {
       throw new DeggoError(
         ERROR_CODES.INVALID_CREDENTIALS,
@@ -69,64 +68,61 @@ export class OrangeClient implements IPaymentProvider {
     const reference = request.reference || this.generateReference();
 
     const transferRequest: OrangeTransferRequest = {
-      partner: {
-        idType: "MSISDN",
-        id: formatPhoneNumber(this.config.apiKey), // Partner's phone number
-        encryptedPinCode: encryptedPin,
-      },
-      customer: {
-        idType: "MSISDN",
-        id: formatPhoneNumber(request.recipient.phoneNumber),
+      recipient: {
+        msisdn: formatPhoneNumber(request.recipient.phoneNumber),
       },
       amount: {
         value: request.amount.value,
-        unit: "XOF",
+        currency: "XOF",
+      },
+      partner: {
+        msisdn: formatPhoneNumber(this.config.apiKey),
+        encrypted_pin: encryptedPin,
       },
       reference,
-      receiveNotification: true,
-      metadata: {
-        senderFirstName: request.recipient.name?.split(" ")[0] || "Deggo",
-        senderLastName: request.recipient.name?.split(" ")[1] || "User",
-      },
     };
 
     const response = await this.makeRequest<OrangeTransferResponse>(
       "POST",
-      ORANGE_ENDPOINTS[this.config.environment].transfer,
+      ORANGE_ENDPOINTS[this.config.environment].cashin,
       transferRequest
     );
 
     return {
-      transactionId: response.transactionId,
+      transactionId: response.transaction_id,
       status: this.mapStatus(response.status),
       amount: request.amount,
       recipient: request.recipient,
       fees: response.fees
         ? {
             value: response.fees.value,
-            currency: response.fees.unit as "XOF",
+            currency: response.fees.currency as "XOF",
           }
         : { value: 0, currency: "XOF" },
       provider: "orange",
-      timestamp: new Date(response.createdAt),
+      timestamp: new Date(response.created_date),
       reference,
-      providerReference: response.transactionId,
+      providerReference: response.transaction_id,
     };
   }
 
   async checkBalance(accountId?: string): Promise<AccountBalance> {
+    const msisdn = accountId || this.config.apiKey;
+
     const response = await this.makeRequest<OrangeBalanceResponse>(
       "GET",
-      ORANGE_ENDPOINTS[this.config.environment].balance
+      `${
+        ORANGE_ENDPOINTS[this.config.environment].balance
+      }?msisdn=${formatPhoneNumber(msisdn)}`
     );
 
     return {
       balance: {
         value: response.balance.value,
-        currency: response.balance.unit as "XOF",
+        currency: response.balance.currency as "XOF",
       },
       provider: "orange",
-      accountId: response.accountId,
+      accountId: response.msisdn,
       lastUpdated: new Date(),
     };
   }
@@ -134,14 +130,15 @@ export class OrangeClient implements IPaymentProvider {
   async getTransactionHistory(
     filter: TransactionFilter
   ): Promise<TransactionHistory> {
-    // Based on Orange Sonatel API, implement transaction search
-    const params: any = {};
+    const params: any = {
+      msisdn: formatPhoneNumber(this.config.apiKey),
+    };
 
     if (filter.startDate) {
-      params.fromDate = filter.startDate.toISOString().split("T")[0];
+      params.start_date = filter.startDate.toISOString().split("T")[0];
     }
     if (filter.endDate) {
-      params.toDate = filter.endDate.toISOString().split("T")[0];
+      params.end_date = filter.endDate.toISOString().split("T")[0];
     }
     if (filter.page) {
       params.page = filter.page;
@@ -152,44 +149,40 @@ export class OrangeClient implements IPaymentProvider {
 
     try {
       const response = await this.makeRequest<any>(
-        "GET",
+        "POST",
         ORANGE_ENDPOINTS[this.config.environment].history,
-        undefined,
         params
       );
 
-      // Transform Orange response to our format
       const transactions = (response.transactions || []).map((tx: any) => ({
-        transactionId: tx.transactionId || tx.id,
+        transactionId: tx.transaction_id,
         status: this.mapStatus(tx.status),
         amount: {
-          value: tx.amount?.value || tx.amount,
+          value: tx.amount.value,
           currency: "XOF" as const,
         },
         recipient: {
-          phoneNumber: tx.customer?.id || tx.recipient?.phoneNumber || "",
-          name: tx.customer?.name || tx.recipient?.name,
+          phoneNumber: tx.recipient?.msisdn || "",
+          name: undefined,
         },
         fees: {
-          value: tx.fees?.value || tx.fees || 0,
+          value: tx.fees?.value || 0,
           currency: "XOF" as const,
         },
         provider: "orange" as const,
-        timestamp: new Date(tx.createdAt || tx.date),
+        timestamp: new Date(tx.created_date),
         reference: tx.reference,
-        providerReference: tx.transactionId || tx.id,
+        providerReference: tx.transaction_id,
       }));
 
       return {
         transactions,
-        total: response.totalElements || response.total || transactions.length,
+        total: response.total_count || transactions.length,
         page: filter.page || 1,
         limit: filter.limit || 50,
-        hasMore: response.hasMore || false,
+        hasMore: response.has_more || false,
       };
     } catch (error) {
-      // If endpoint fails, return empty but don't crash
-      console.warn("Transaction history endpoint failed:", error);
       return {
         transactions: [],
         total: 0,
@@ -204,17 +197,26 @@ export class OrangeClient implements IPaymentProvider {
     amount: PaymentAmount,
     recipient: string
   ): Promise<PaymentAmount> {
-    // Orange Money fee structure from documentation
     const value = amount.value;
     let fee = 0;
 
-    if (value <= 2500) fee = 0;
-    else if (value <= 5000) fee = 100;
-    else if (value <= 15000) fee = 200;
-    else if (value <= 25000) fee = 400;
-    else if (value <= 50000) fee = 800;
-    else if (value <= 125000) fee = 1500;
-    else fee = 2500;
+    // Updated fees based on official Orange Money Senegal documentation
+    if (value <= 500) {
+      fee = 0; // Free
+    } else if (value <= 2000) {
+      fee = 0; // Free
+    } else if (value <= 3000) {
+      fee = 15;
+    } else if (value <= 5000) {
+      fee = 25;
+    } else if (value <= 10000) {
+      fee = 50;
+    } else if (value <= 15000) {
+      fee = 50;
+    } else {
+      // For larger amounts, use 0.8% commission rate for transfers
+      fee = Math.round(value * 0.008); // 0.8%
+    }
 
     return { value: fee, currency: "XOF" };
   }
@@ -226,29 +228,37 @@ export class OrangeClient implements IPaymentProvider {
   }
 
   async getTransactionStatus(transactionId: string): Promise<PaymentResponse> {
+    const requestData = {
+      transaction_id: transactionId,
+      msisdn: formatPhoneNumber(this.config.apiKey),
+    };
+
     const response = await this.makeRequest<OrangeTransferResponse>(
-      "GET",
-      `${ORANGE_ENDPOINTS[this.config.environment].status}/${transactionId}`
+      "POST",
+      ORANGE_ENDPOINTS[this.config.environment].status,
+      requestData
     );
 
     return {
-      transactionId: response.transactionId,
+      transactionId: response.transaction_id,
       status: this.mapStatus(response.status),
       amount: {
         value: response.amount.value,
-        currency: response.amount.unit as "XOF",
+        currency: response.amount.currency as "XOF",
       },
-      recipient: { phoneNumber: "" },
+      recipient: {
+        phoneNumber: response.recipient?.msisdn || "",
+      },
       fees: response.fees
         ? {
             value: response.fees.value,
-            currency: response.fees.unit as "XOF",
+            currency: response.fees.currency as "XOF",
           }
         : { value: 0, currency: "XOF" },
       provider: "orange",
-      timestamp: new Date(response.createdAt),
+      timestamp: new Date(response.created_date),
       reference: response.reference,
-      providerReference: response.transactionId,
+      providerReference: response.transaction_id,
     };
   }
 
@@ -285,11 +295,11 @@ export class OrangeClient implements IPaymentProvider {
 
   private handleApiError(error: any): never {
     const errorCode =
-      error.response?.data?.error?.code ||
+      error.response?.data?.error_code ||
       error.response?.status?.toString() ||
       "UNKNOWN";
     const errorMessage =
-      error.response?.data?.error?.message || error.message || "Unknown error";
+      error.response?.data?.error_message || error.message || "Unknown error";
 
     let deggoErrorCode: string = ERROR_CODES.NETWORK_ERROR;
 
@@ -331,6 +341,8 @@ export class OrangeClient implements IPaymentProvider {
         return "pending";
       case "FAILED":
         return "failed";
+      case "EXPIRED":
+        return "cancelled";
       default:
         return "pending";
     }
